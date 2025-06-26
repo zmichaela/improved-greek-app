@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Καλησπέρα! - Learn Greek with Ancient Heroes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #8B7355, #A0895C, #6B5B47);
+            min-height: 100vh;
+            color: #F5F1E8;
+            touch-action: manipulation;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: Georgia, serif;
+        }
+
+        .card {
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 32px rgba(107, 91, 71, 0.3);
+            color: #4A4138;
+            border: 2px solid rgba(160, 137, 92, 0.3);
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-btn {
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .mode-btn:hover {
+            border-color: #8B7355;
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #8B7355, #A0895C);
+            color: #F5F1E8;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.4);
+        }
+
+        .alphabet-content {
+            display: none;
+        }
+
+        .alphabet-content.active {
+            display: block;
+        }
+
+        .personality-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .personality-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #D4C4A8, #BFB299);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border: 4px solid #8B7355;
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+        }
+
+        .personality-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #6B5B47;
+            margin-bottom: 0.5rem;
+        }
+
+        .personality-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .letter-display {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .greek-letter {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #6B5B47;
+            font-family: 'Times New Roman', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .letter-info {
+            background: #EDE6D3;
+            color: #6B5B47;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #D4C4A8;
+        }
+
+        .pronunciation-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #8B7355, #A0895C);
+            color: #F5F1E8;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0.5rem;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .writing-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #1f2937;
+        }
+
+        .writing-area {
+            border: 3px dashed #cbd5e1;
+            border-radius: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .writing-canvas {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background: white;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .guide-letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            color: rgba(107, 91, 71, 0.15);
+            font-family: 'Times New Roman', serif;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #EDE6D3;
+            border-color: #8B7355;
+        }
+
+        .phrases-content {
+            display: none;
+        }
+
+        .phrases-content.active {
+            display: block;
+        }
+
+        .phrase-display {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .english-phrase {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6B5B47;
+            margin-bottom: 1rem;
+        }
+
+        .greek-phrase {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #8B7355;
+            margin-bottom: 1rem;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .phrase-context {
+            background: #EDE6D3;
+            color: #6B5B47;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border: 2px solid #D4C4A8;
+        }
+
+        .quiz-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid #f3f4f6;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #8B7355;
+        }
+
+        .check-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #8B7355, #A0895C);
+            color: #F5F1E8;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+        }
+
+        .result-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        .result-section.correct {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .result-section.incorrect {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .greek-answer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+            margin: 0.5rem 0;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #7F8471, #8B9475);
+            color: #F5F1E8;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(127, 132, 113, 0.3);
+        }
+
+        .progress-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .reset-btn {
+            background: rgba(245, 241, 232, 0.2);
+            color: #F5F1E8;
+            border: 2px solid rgba(245, 241, 232, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 0.75rem; }
+            .header h1 { font-size: 2rem; }
+            .greek-letter { font-size: 3rem; }
+            .english-phrase { font-size: 1.5rem; }
+            .personality-image { width: 100px; height: 100px; }
+            .canvas-controls { flex-wrap: wrap; }
+            .stats { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Καλησπέρα! 🇬🇷</h1>
+            <p>Learn Greek with Ancient Heroes & Philosophers</p>
+            <p style="font-size: 0.875rem; opacity: 0.8;">Discover the language through legendary figures</p>
+        </div>
+
+        <div class="card">
+            <div class="stats">
+                <div class="stats-group">
+                    <div class="stat">
+                        <span>🏆</span>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat">
+                        <span>⭐</span>
+                        <span id="streak">0</span>
+                    </div>
+                    <div style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 1rem; font-size: 0.75rem;">
+                        <span id="island">Paros</span> 🏝️
+                    </div>
+                </div>
+                <button class="reset-btn" onclick="resetGame()">🔄 Reset</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="mode-selector">
+                <button class="mode-btn active" onclick="setMode('alphabet')" id="alphabet-btn">
+                    🏛️ Greek Alphabet<br>
+                    <span style="font-size: 0.8rem; opacity: 0.7;">With Ancient Heroes</span>
+                </button>
+                <button class="mode-btn" onclick="setMode('phrases')" id="phrases-btn">
+                    💬 Essential Phrases<br>
+                    <span style="font-size: 0.8rem; opacity: 0.7;">For Island Life</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Alphabet Mode -->
+        <div id="alphabet-mode" class="alphabet-content active">
+            <div class="card">
+                <div class="personality-section">
+                    <div class="personality-image" id="personality-image">
+                        👑
+                    </div>
+                    <div class="personality-name" id="personality-name">Alexander the Great</div>
+                    <div class="personality-description" id="personality-description">
+                        The legendary Macedonian king who created one of history's largest empires by age 30
+                    </div>
+                </div>
+
+                <div class="letter-display">
+                    <div class="greek-letter" id="current-letter">Α α</div>
+                    <div class="letter-info">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;" id="letter-name">Alpha</div>
+                        <div style="margin-bottom: 0.5rem;">Pronunciation: <em id="pronunciation">/AL-fah/</em></div>
+                        <div><strong>Sound:</strong> <span id="sound-info">"a" as in "father"</span></div>
+                        <div><strong>Example:</strong> <span id="example-word">άνθρωπος (person)</span></div>
+                    </div>
+                </div>
+
+                <div class="pronunciation-section">
+                    <div class="section-title">🔊 Listen & Practice</div>
+                    <button class="play-btn" onclick="playLetterName()" id="play-name-btn">🔊 Play "Alpha"</button>
+                    <button class="play-btn" onclick="playLetterSound()" id="play-sound-btn">🔊 Play "A" Sound</button>
+                </div>
+
+                <div class="writing-section">
+                    <div class="section-title">✍️ Practice Writing Both Cases</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <!-- Uppercase Practice -->
+                        <div>
+                            <div style="text-align: center; margin-bottom: 0.5rem; font-weight: 600; color: #6B5B47;">Uppercase</div>
+                            <div class="writing-area" style="min-height: 180px;">
+                                <div class="guide-letter" id="guide-letter-upper">Α</div>
+                                <canvas class="writing-canvas" id="canvas-upper" width="250" height="160"></canvas>
+                                <div style="text-align: center; margin-top: 0.5rem;">
+                                    <button class="control-btn" onclick="clearCanvas('upper')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">🗑️ Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Lowercase Practice -->
+                        <div>
+                            <div style="text-align: center; margin-bottom: 0.5rem; font-weight: 600; color: #6B5B47;">Lowercase</div>
+                            <div class="writing-area" style="min-height: 180px;">
+                                <div class="guide-letter" id="guide-letter-lower">α</div>
+                                <canvas class="writing-canvas" id="canvas-lower" width="250" height="160"></canvas>
+                                <div style="text-align: center; margin-top: 0.5rem;">
+                                    <button class="control-btn" onclick="clearCanvas('lower')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">🗑️ Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="control-btn" onclick="toggleGuide()">👁️ Toggle Guides</button>
+                        <button class="control-btn" onclick="clearBothCanvas()" style="margin-left: 0.5rem;">🗑️ Clear Both</button>
+                    </div>
+                    
+                    <div style="text-align: center; color: #6B5B47; font-size: 0.9rem; margin-top: 1rem;">
+                        Practice writing both uppercase and lowercase letters
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="control-btn" onclick="previousLetter()" id="prev-letter-btn" style="flex: 1; background: #f3f4f6; border-color: #d1d5db;">
+                        ⬅️ <span id="prev-letter-name">Omega (Ω)</span>
+                    </button>
+                    <button class="next-btn" onclick="nextLetter()" id="next-letter-btn" style="flex: 2;">
+                        Continue to <span id="next-letter-name">Beta (Β)</span> ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phrases Mode -->
+        <div id="phrases-mode" class="phrases-content">
+            <div class="card">
+                <div class="phrase-display">
+                    <div class="english-phrase" id="english-phrase">Hello</div>
+                    <div class="greek-phrase" id="greek-phrase">Γεια σας</div>
+                    <div style="font-style: italic; color: #6B5B47; margin-bottom: 1rem;" id="phrase-pronunciation">/YAH-sahs/</div>
+                    <div class="phrase-context" id="phrase-context">
+                        💡 A friendly greeting for meeting people in ancient and modern Greece
+                    </div>
+                </div>
+
+                <div class="pronunciation-section">
+                    <button class="play-btn" onclick="playPhrase()">🔊 Listen to Greek</button>
+                </div>
+
+                <div class="quiz-section">
+                    <div class="section-title">How do you say this in Greek?</div>
+                    <input type="text" class="answer-input" id="phrase-answer" placeholder="Type in Greek..." onkeypress="if(event.key==='Enter') checkPhraseAnswer()">
+                    <button class="check-btn" onclick="checkPhraseAnswer()">Check Answer</button>
+                    
+                    <div id="phrase-result" class="result-section" style="display: none;">
+                        <div id="result-message"></div>
+                        <div class="greek-answer" id="correct-greek"></div>
+                        <div style="font-style: italic;" id="correct-pronunciation"></div>
+                        <button class="play-btn" onclick="playPhrase()">🔊 Listen Again</button>
+                        <button class="next-btn" onclick="nextPhrase()">Next Phrase ➡️</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-info" id="progress-info">
+            Letter 1 of 24 • Alpha
+        </div>
+    </div>
+
+    <script>
+        class GreekLearningApp {
+            constructor() {
+                this.state = {
+                    mode: 'alphabet',
+                    currentAlphabet: 0,
+                    currentPhrase: 0,
+                    showResult: false,
+                    writingMode: 'uppercase'
+                };
+
+                this.islands = ['Paros', 'Naxos', 'Mykonos', 'Santorini', 'Ios', 'Amorgos', 'Milos', 'Syros'];
+                
+                this.alphabet = [
+                    { letter: 'Α α', name: 'Alpha', pronunciation: '/AL-fah/', sound: '"a" as in "father"', example: 'άνθρωπος (person)', personality: 'Alexander the Great', description: 'The legendary Macedonian king who created one of history\'s largest empires by age 30', icon: '👑' },
+                    { letter: 'Β β', name: 'Beta', pronunciation: '/VEE-tah/', sound: '"v" as in "victory"', example: 'βάρκα (boat)', personality: 'Byron (Lord Byron)', description: 'The famous British poet who fought for Greek independence and died in Greece', icon: '📝' },
+                    { letter: 'Γ γ', name: 'Gamma', pronunciation: '/GAH-mah/', sound: '"g" as in "go"', example: 'γάλα (milk)', personality: 'Galen', description: 'The Greek physician whose medical knowledge dominated for over 1,000 years', icon: '⚕️' },
+                    { letter: 'Δ δ', name: 'Delta', pronunciation: '/THEL-tah/', sound: '"th" as in "this"', example: 'δώρο (gift)', personality: 'Democritus', description: 'The ancient philosopher who first proposed the idea of atoms', icon: '⚛️' },
+                    { letter: 'Ε ε', name: 'Epsilon', pronunciation: '/EP-see-lon/', sound: '"e" as in "end"', example: 'ελιά (olive)', personality: 'Euclid', description: 'The father of geometry whose mathematical principles still guide us today', icon: '📐' },
+                    { letter: 'Ζ ζ', name: 'Zeta', pronunciation: '/ZEE-tah/', sound: '"z" as in "zebra"', example: 'ζάχαρη (sugar)', personality: 'Zeus', description: 'King of the gods in Greek mythology, ruler of Mount Olympus', icon: '⚡' },
+                    { letter: 'Η η', name: 'Eta', pronunciation: '/EE-tah/', sound: '"ee" as in "see"', example: 'ήλιος (sun)', personality: 'Heraclitus', description: 'The philosopher famous for saying "No man ever steps in the same river twice"', icon: '🌊' },
+                    { letter: 'Θ θ', name: 'Theta', pronunciation: '/THEE-tah/', sound: '"th" as in "think"', example: 'θάλασσα (sea)', personality: 'Thales', description: 'The first Greek philosopher and mathematician, often called the "father of science"', icon: '🌟' },
+                    { letter: 'Ι ι', name: 'Iota', pronunciation: '/ee-OH-tah/', sound: '"ee" as in "machine"', example: 'ιστορία (history)', personality: 'Isocrates', description: 'The great orator and teacher of rhetoric in ancient Athens', icon: '🗣️' },
+                    { letter: 'Κ κ', name: 'Kappa', pronunciation: '/KAH-pah/', sound: '"k" as in "kite"', example: 'καφές (coffee)', personality: 'Cleisthenes', description: 'The "father of democracy" who reformed the Athenian political system', icon: '🗳️' },
+                    { letter: 'Λ λ', name: 'Lambda', pronunciation: '/LAHM-thah/', sound: '"l" as in "lamp"', example: 'λεμόνι (lemon)', personality: 'Leonidas', description: 'The Spartan king who led 300 warriors at the Battle of Thermopylae', icon: '⚔️' },
+                    { letter: 'Μ μ', name: 'Mu', pronunciation: '/mee/', sound: '"m" as in "mother"', example: 'μήλο (apple)', personality: 'Marcus Aurelius', description: 'The philosopher emperor who wrote "Meditations" and ruled Rome with wisdom', icon: '👨‍⚖️' },
+                    { letter: 'Ν ν', name: 'Nu', pronunciation: '/nee/', sound: '"n" as in "nice"', example: 'νερό (water)', personality: 'Nestor', description: 'The wise old king from Homer\'s Iliad, known for his sage counsel', icon: '👴' },
+                    { letter: 'Ξ ξ', name: 'Xi', pronunciation: '/ksee/', sound: '"ks" as in "box"', example: 'ξένος (stranger)', personality: 'Xenophon', description: 'The historian and soldier who documented Socrates\' teachings', icon: '📖' },
+                    { letter: 'Ο ο', name: 'Omicron', pronunciation: '/OH-mee-kron/', sound: '"o" as in "hot"', example: 'όνομα (name)', personality: 'Odysseus', description: 'The clever hero of Homer\'s Odyssey, known for his long journey home', icon: '🚢' },
+                    { letter: 'Π π', name: 'Pi', pronunciation: '/pee/', sound: '"p" as in "pet"', example: 'πόλη (city)', personality: 'Pericles', description: 'The statesman who led Athens during its Golden Age', icon: '🏛️' },
+                    { letter: 'Ρ ρ', name: 'Rho', pronunciation: '/roh/', sound: '"r" as in "red"', example: 'ρόδα (wheel)', personality: 'Romulus', description: 'The legendary founder and first king of Rome', icon: '🏺' },
+                    { letter: 'Σ σ/ς', name: 'Sigma', pronunciation: '/SEEG-mah/', sound: '"s" as in "sun"', example: 'σπίτι (house)', personality: 'Socrates', description: 'The wise philosopher who taught through questioning, mentor to Plato', icon: '💭' },
+                    { letter: 'Τ τ', name: 'Tau', pronunciation: '/taf/', sound: '"t" as in "top"', example: 'τυρί (cheese)', personality: 'Thucydides', description: 'The historian who documented the Peloponnesian War with scientific precision', icon: '📚' },
+                    { letter: 'Υ υ', name: 'Upsilon', pronunciation: '/EEP-see-lon/', sound: '"ee" as in "see"', example: 'ύπνος (sleep)', personality: 'Ulysses (Odysseus)', description: 'The Roman name for Odysseus, the clever hero of epic adventures', icon: '🗡️' },
+                    { letter: 'Φ φ', name: 'Phi', pronunciation: '/fee/', sound: '"f" as in "fire"', example: 'φίλος (friend)', personality: 'Phidias', description: 'The master sculptor who created the statue of Zeus at Olympia', icon: '🎨' },
+                    { letter: 'Χ χ', name: 'Chi', pronunciation: '/khee/', sound: '"kh" as in "Bach"', example: 'χρόνος (time)', personality: 'Chrysippus', description: 'The Stoic philosopher who developed the logic of propositions', icon: '🕐' },
+                    { letter: 'Ψ ψ', name: 'Psi', pronunciation: '/psee/', sound: '"ps" as in "lips"', example: 'ψάρι (fish)', personality: 'Pythia', description: 'The Oracle of Delphi who delivered prophecies from the god Apollo', icon: '🔮' },
+                    { letter: 'Ω ω', name: 'Omega', pronunciation: '/oh-MEH-gah/', sound: '"o" as in "note"', example: 'ώρα (hour)', personality: 'Olympiodorus', description: 'The last great philosopher of ancient Athens who preserved Greek wisdom', icon: '🌅' }
+                ];
+
+                this.phrases = [
+                    { english: 'Hello', greek: 'Γεια σας', pronunciation: '/YAH-sahs/', context: 'A friendly greeting for meeting people in ancient and modern Greece' },
+                    { english: 'Thank you', greek: 'Ευχαριστώ', pronunciation: '/ef-khah-rees-TOH/', context: 'Essential for showing gratitude, valued since ancient times' },
+                    { english: 'Please', greek: 'Παρακαλώ', pronunciation: '/pah-rah-kah-LOH/', context: 'Also means "you\'re welcome" - shows respect and courtesy' },
+                    { english: 'Excuse me', greek: 'Συγγνώμη', pronunciation: '/see-GNOH-mee/', context: 'For getting attention or apologizing politely in any era' },
+                    { english: 'Good morning', greek: 'Καλημέρα', pronunciation: '/kah-lee-MEH-rah/', context: 'Morning greeting used since ancient Greek times' },
+                    { english: 'Good night', greek: 'Καλή νύχτα', pronunciation: '/kah-LEE NEEKH-tah/', context: 'Evening farewell wishing peaceful rest' },
+                    { english: 'How much?', greek: 'Πόσο κάνει;', pronunciation: '/POH-so KAH-nee/', context: 'Essential for commerce and trade, ancient and modern' },
+                    { english: 'Where is...?', greek: 'Που είναι...;', pronunciation: '/poo EE-neh/', context: 'Find temples, agoras, and important places' }
+                ];
+
+                this.canvas = null;
+                this.ctx = null;
+                this.isDrawing = false;
+                this.showGuide = true;
+
+                this.init();
+            }
+
+            init() {
+                this.setupCanvas();
+                this.render();
+            }
+
+            setupCanvas() {
+                this.canvasUpper = document.getElementById('canvas-upper');
+                this.canvasLower = document.getElementById('canvas-lower');
+                this.ctxUpper = this.canvasUpper.getContext('2d');
+                this.ctxLower = this.canvasLower.getContext('2d');
+                
+                // Setup both canvases
+                [this.ctxUpper, this.ctxLower].forEach(ctx => {
+                    ctx.strokeStyle = '#6B5B47';
+                    ctx.lineWidth = 3;
+                    ctx.lineCap = 'round';
+                });
+                
+                // Mouse and touch events for upper canvas
+                this.canvasUpper.addEventListener('mousedown', (e) => this.startDrawing(e, 'upper'));
+                this.canvasUpper.addEventListener('mousemove', (e) => this.draw(e, 'upper'));
+                this.canvasUpper.addEventListener('mouseup', () => this.stopDrawing());
+                this.canvasUpper.addEventListener('touchstart', (e) => this.handleTouch(e, 'upper'));
+                this.canvasUpper.addEventListener('touchmove', (e) => this.handleTouch(e, 'upper'));
+                this.canvasUpper.addEventListener('touchend', () => this.stopDrawing());
+                
+                // Mouse and touch events for lower canvas
+                this.canvasLower.addEventListener('mousedown', (e) => this.startDrawing(e, 'lower'));
+                this.canvasLower.addEventListener('mousemove', (e) => this.draw(e, 'lower'));
+                this.canvasLower.addEventListener('mouseup', () => this.stopDrawing());
+                this.canvasLower.addEventListener('touchstart', (e) => this.handleTouch(e, 'lower'));
+                this.canvasLower.addEventListener('touchmove', (e) => this.handleTouch(e, 'lower'));
+                this.canvasLower.addEventListener('touchend', () => this.stopDrawing());
+            }
+
+            startDrawing(e, canvasType = 'upper') {
+                this.isDrawing = true;
+                this.currentCanvas = canvasType;
+                this.draw(e, canvasType);
+            }
+
+            draw(e, canvasType = 'upper') {
+                if (!this.isDrawing || this.currentCanvas !== canvasType) return;
+                
+                const canvas = canvasType === 'upper' ? this.canvasUpper : this.canvasLower;
+                const ctx = canvasType === 'upper' ? this.ctxUpper : this.ctxLower;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+
+            handleTouch(e, canvasType = 'upper') {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                                e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                const canvas = canvasType === 'upper' ? this.canvasUpper : this.canvasLower;
+                canvas.dispatchEvent(mouseEvent);
+            }
+
+            stopDrawing() {
+                if (this.isDrawing) {
+                    this.isDrawing = false;
+                    this.ctx.beginPath();
+                }
+            }
+
+            startIslandRotation() {
+                setInterval(() => {
+                    this.state.island = this.islands[Math.floor(Math.random() * this.islands.length)];
+                    document.getElementById('island').textContent = this.state.island;
+                }, 8000);
+            }
+
+            setMode(mode) {
+                this.state.mode = mode;
+                this.state.showResult = false;
+                
+                document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(mode + '-btn').classList.add('active');
+                
+                document.getElementById('alphabet-mode').classList.toggle('active', mode === 'alphabet');
+                document.getElementById('phrases-mode').classList.toggle('active', mode === 'phrases');
+                
+                this.render();
+            }
+
+            playLetterName() {
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel(); // Stop any ongoing speech
+                    const currentLetter = this.alphabet[this.state.currentAlphabet];
+                    const utterance = new SpeechSynthesisUtterance(currentLetter.name);
+                    utterance.lang = 'el-GR';
+                    utterance.rate = 0.7;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+            playLetterSound() {
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel(); // Stop any ongoing speech
+                    const currentLetter = this.alphabet[this.state.currentAlphabet];
+                    
+                    // Map specific letter sounds correctly
+                    let sound = '';
+                    switch(this.state.currentAlphabet) {
+                        case 0: sound = 'ah'; break; // Alpha - "a" as in "father"
+                        case 1: sound = 'v'; break; // Beta - "v" sound
+                        case 2: sound = 'g'; break; // Gamma - "g" sound
+                        case 3: sound = 'th'; break; // Delta - "th" sound
+                        case 4: sound = 'eh'; break; // Epsilon - "e" sound
+                        case 5: sound = 'z'; break; // Zeta - "z" sound
+                        case 6: sound = 'ee'; break; // Eta - "ee" sound
+                        case 7: sound = 'th'; break; // Theta - "th" sound (different from Delta)
+                        case 8: sound = 'ee'; break; // Iota - "ee" sound
+                        case 9: sound = 'k'; break; // Kappa - "k" sound
+                        case 10: sound = 'l'; break; // Lambda - "l" sound
+                        case 11: sound = 'm'; break; // Mu - "m" sound
+                        case 12: sound = 'n'; break; // Nu - "n" sound
+                        case 13: sound = 'ks'; break; // Xi - "ks" sound
+                        case 14: sound = 'o'; break; // Omicron - "o" sound
+                        case 15: sound = 'p'; break; // Pi - "p" sound
+                        case 16: sound = 'r'; break; // Rho - "r" sound
+                        case 17: sound = 's'; break; // Sigma - "s" sound
+                        case 18: sound = 't'; break; // Tau - "t" sound
+                        case 19: sound = 'ee'; break; // Upsilon - "ee" sound
+                        case 20: sound = 'f'; break; // Phi - "f" sound
+                        case 21: sound = 'kh'; break; // Chi - "kh" sound
+                        case 22: sound = 'ps'; break; // Psi - "ps" sound
+                        case 23: sound = 'oh'; break; // Omega - "o" sound
+                        default: sound = 'a';
+                    }
+                    
+                    const utterance = new SpeechSynthesisUtterance(sound);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.6;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+            playPhrase() {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(this.phrases[this.state.currentPhrase].greek);
+                    utterance.lang = 'el-GR';
+                    utterance.rate = 0.7;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+            clearCanvas(canvasType = 'both') {
+                if (canvasType === 'upper' || canvasType === 'both') {
+                    this.ctxUpper.clearRect(0, 0, this.canvasUpper.width, this.canvasUpper.height);
+                }
+                if (canvasType === 'lower' || canvasType === 'both') {
+                    this.ctxLower.clearRect(0, 0, this.canvasLower.width, this.canvasLower.height);
+                }
+            }
+
+            clearBothCanvas() {
+                this.clearCanvas('both');
+            }
+
+            toggleGuide() {
+                const guideUpper = document.getElementById('guide-letter-upper');
+                const guideLower = document.getElementById('guide-letter-lower');
+                this.showGuide = !this.showGuide;
+                guideUpper.style.display = this.showGuide ? 'block' : 'none';
+                guideLower.style.display = this.showGuide ? 'block' : 'none';
+            }
+
+            updateGuideLetterDisplay() {
+                const guideUpperElement = document.getElementById('guide-letter-upper');
+                const guideLowerElement = document.getElementById('guide-letter-lower');
+                if (guideUpperElement && guideLowerElement) {
+                    const letter = this.alphabet[this.state.currentAlphabet];
+                    const letterParts = letter.letter.split(' ');
+                    guideUpperElement.textContent = letterParts[0]; // Uppercase
+                    guideLowerElement.textContent = letterParts[1]; // Lowercase
+                }
+            }
+
+            nextLetter() {
+                this.state.currentAlphabet = (this.state.currentAlphabet + 1) % this.alphabet.length;
+                this.clearCanvas('both');
+                this.render();
+            }
+
+            previousLetter() {
+                this.state.currentAlphabet = (this.state.currentAlphabet - 1 + this.alphabet.length) % this.alphabet.length;
+                this.clearCanvas('both');
+                this.render();
+            }
+
+            checkPhraseAnswer() {
+                const userAnswer = document.getElementById('phrase-answer').value.trim();
+                const correct = this.phrases[this.state.currentPhrase].greek;
+                const isCorrect = userAnswer.toLowerCase() === correct.toLowerCase();
+                
+                const resultDiv = document.getElementById('phrase-result');
+                const messageDiv = document.getElementById('result-message');
+                const greekDiv = document.getElementById('correct-greek');
+                const pronunciationDiv = document.getElementById('correct-pronunciation');
+                
+                resultDiv.className = `result-section ${isCorrect ? 'correct' : 'incorrect'}`;
+                messageDiv.textContent = isCorrect ? '✅ Μπράβο! Perfect!' : '❌ Not quite right. Here\'s the answer:';
+                greekDiv.textContent = correct;
+                pronunciationDiv.textContent = this.phrases[this.state.currentPhrase].pronunciation;
+                
+                resultDiv.style.display = 'block';
+                this.state.showResult = true;
+                this.render();
+            }
+
+            nextPhrase() {
+                this.state.currentPhrase = (this.state.currentPhrase + 1) % this.phrases.length;
+                this.state.showResult = false;
+                document.getElementById('phrase-answer').value = '';
+                document.getElementById('phrase-result').style.display = 'none';
+                this.render();
+            }
+
+            resetGame() {
+                this.state.currentAlphabet = 0;
+                this.state.currentPhrase = 0;
+                this.state.showResult = false;
+                this.clearCanvas('both');
+                this.render();
+            }
+
+            render() {
+                if (this.state.mode === 'alphabet') {
+                    const letter = this.alphabet[this.state.currentAlphabet];
+                    
+                    // Update personality section
+                    document.getElementById('personality-image').textContent = letter.icon;
+                    document.getElementById('personality-name').textContent = letter.personality;
+                    document.getElementById('personality-description').textContent = letter.description;
+                    
+                    // Update letter display
+                    document.getElementById('current-letter').textContent = letter.letter;
+                    document.getElementById('letter-name').textContent = letter.name;
+                    document.getElementById('pronunciation').textContent = letter.pronunciation;
+                    document.getElementById('sound-info').textContent = letter.sound;
+                    document.getElementById('example-word').textContent = letter.example;
+                    
+                    // Update guide letters for both canvases
+                    this.updateGuideLetterDisplay();
+                    
+                    // Update audio button texts to match current letter
+                    const playNameBtn = document.getElementById('play-name-btn');
+                    const playSoundBtn = document.getElementById('play-sound-btn');
+                    if (playNameBtn) {
+                        playNameBtn.innerHTML = `🔊 Play "${letter.name}"`;
+                    }
+                    if (playSoundBtn) {
+                        const soundLetter = letter.sound.match(/"([^"]+)"/);
+                        const displaySound = soundLetter ? soundLetter[1].toUpperCase() : letter.name.charAt(0);
+                        playSoundBtn.innerHTML = `🔊 Play "${displaySound}" Sound`;
+                    }
+                    
+                    // Update navigation buttons
+                    const nextIndex = (this.state.currentAlphabet + 1) % this.alphabet.length;
+                    const prevIndex = (this.state.currentAlphabet - 1 + this.alphabet.length) % this.alphabet.length;
+                    const nextLetter = this.alphabet[nextIndex];
+                    const prevLetter = this.alphabet[prevIndex];
+                    
+                    // Update next button
+                    const nextButtonText = nextIndex === 0 ? 'Start Over with Alpha (Α)' : `Continue to ${nextLetter.name} (${nextLetter.letter.split(' ')[0]})`;
+                    const buttonElement = document.getElementById('next-letter-btn');
+                    if (buttonElement) {
+                        buttonElement.innerHTML = nextIndex === 0 ? 
+                            '🔄 Start Over with <span id="next-letter-name">Alpha (Α)</span>' :
+                            'Continue to <span id="next-letter-name">' + nextLetter.name + ' (' + nextLetter.letter.split(' ')[0] + ')</span> ➡️';
+                    }
+                    
+                    // Update previous button
+                    const prevButtonElement = document.getElementById('prev-letter-name');
+                    if (prevButtonElement) {
+                        prevButtonElement.textContent = `${prevLetter.name} (${prevLetter.letter.split(' ')[0]})`;
+                    }
+                    
+                    // Update progress
+                    document.getElementById('progress-info').textContent = 
+                        `Letter ${this.state.currentAlphabet + 1} of 24 • ${letter.name}`;
+                        
+                } else if (this.state.mode === 'phrases') {
+                    const phrase = this.phrases[this.state.currentPhrase];
+                    
+                    document.getElementById('english-phrase').textContent = phrase.english;
+                    document.getElementById('greek-phrase').textContent = phrase.greek;
+                    document.getElementById('phrase-pronunciation').textContent = phrase.pronunciation;
+                    document.getElementById('phrase-context').textContent = `💡 ${phrase.context}`;
+                    
+                    // Update progress
+                    document.getElementById('progress-info').textContent = 
+                        `Phrase ${this.state.currentPhrase + 1} of ${this.phrases.length} • Essential Greek`;
+                }
+            }
+        }
+
+        // Initialize the app
+        const app = new GreekLearningApp();
+
+        // Global functions for onclick handlers
+        function setMode(mode) { app.setMode(mode); }
+        function playLetterName() { app.playLetterName(); }
+        function playLetterSound() { app.playLetterSound(); }
+        function playPhrase() { app.playPhrase(); }
+        function clearCanvas(type) { app.clearCanvas(type); }
+        function clearBothCanvas() { app.clearBothCanvas(); }
+        function toggleGuide() { app.toggleGuide(); }
+        function nextLetter() { app.nextLetter(); }
+        function previousLetter() { app.previousLetter(); }
+        function checkPhraseAnswer() { app.checkPhraseAnswer(); }
+        function nextPhrase() { app.nextPhrase(); }
+    </script>
+</body>
+</html>
