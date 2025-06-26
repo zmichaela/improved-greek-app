@@ -197,16 +197,22 @@
             touch-action: none;
         }
 
-        .guide-letter {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .letter-display-container {
+            background: #F5F1E8;
+            border: 3px solid #D4C4A8;
+            border-radius: 1rem;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .letter-display-large {
             font-size: 8rem;
-            color: rgba(107, 91, 71, 0.15);
+            font-weight: bold;
+            color: #6B5B47;
             font-family: 'Times New Roman', serif;
-            pointer-events: none;
-            z-index: 1;
         }
 
         .canvas-controls {
@@ -411,7 +417,6 @@
                         <span>⭐</span>
                         <span id="streak">0</span>
                     </div>
-                   
                 </div>
                 <button class="reset-btn" onclick="resetGame()">🔄 Reset</button>
             </div>
@@ -459,42 +464,29 @@
                     <button class="play-btn" onclick="playLetterSound()" id="play-sound-btn">🔊 Play "A" Sound</button>
                 </div>
 
-                <div class="writing-section">
-                    <div class="section-title">✍️ Practice Writing Both Cases</div>
+                <div class="letter-display-section">
+                    <div class="section-title">✍️ Letter Forms</div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <!-- Uppercase Practice -->
-                        <div>
-                            <div style="text-align: center; margin-bottom: 0.5rem; font-weight: 600; color: #6B5B47;">Uppercase</div>
-                            <div class="writing-area" style="min-height: 180px;">
-                                <div class="guide-letter" id="guide-letter-upper">Α</div>
-                                <canvas class="writing-canvas" id="canvas-upper" width="250" height="160"></canvas>
-                                <div style="text-align: center; margin-top: 0.5rem;">
-                                    <button class="control-btn" onclick="clearCanvas('upper')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">🗑️ Clear</button>
-                                </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                        <!-- Uppercase Display -->
+                        <div style="text-align: center;">
+                            <div style="font-weight: 600; color: #6B5B47; margin-bottom: 1rem;">Uppercase</div>
+                            <div class="letter-display-container">
+                                <div class="letter-display-large" id="upper-display">Α</div>
                             </div>
                         </div>
                         
-                        <!-- Lowercase Practice -->
-                        <div>
-                            <div style="text-align: center; margin-bottom: 0.5rem; font-weight: 600; color: #6B5B47;">Lowercase</div>
-                            <div class="writing-area" style="min-height: 180px;">
-                                <div class="guide-letter" id="guide-letter-lower">α</div>
-                                <canvas class="writing-canvas" id="canvas-lower" width="250" height="160"></canvas>
-                                <div style="text-align: center; margin-top: 0.5rem;">
-                                    <button class="control-btn" onclick="clearCanvas('lower')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">🗑️ Clear</button>
-                                </div>
+                        <!-- Lowercase Display -->
+                        <div style="text-align: center;">
+                            <div style="font-weight: 600; color: #6B5B47; margin-bottom: 1rem;">Lowercase</div>
+                            <div class="letter-display-container">
+                                <div class="letter-display-large" id="lower-display">α</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div style="text-align: center;">
-                        <button class="control-btn" onclick="toggleGuide()">👁️ Toggle Guides</button>
-                        <button class="control-btn" onclick="clearBothCanvas()" style="margin-left: 0.5rem;">🗑️ Clear Both</button>
-                    </div>
-                    
-                    <div style="text-align: center; color: #6B5B47; font-size: 0.9rem; margin-top: 1rem;">
-                        Practice writing both uppercase and lowercase letters
+                    <div style="text-align: center; color: #6B5B47; font-size: 0.9rem;">
+                        Study both uppercase and lowercase letter forms
                     </div>
                 </div>
 
@@ -606,38 +598,7 @@
             }
 
             init() {
-                this.setupCanvas();
                 this.render();
-            }
-
-            setupCanvas() {
-                this.canvasUpper = document.getElementById('canvas-upper');
-                this.canvasLower = document.getElementById('canvas-lower');
-                this.ctxUpper = this.canvasUpper.getContext('2d');
-                this.ctxLower = this.canvasLower.getContext('2d');
-                
-                // Setup both canvases
-                [this.ctxUpper, this.ctxLower].forEach(ctx => {
-                    ctx.strokeStyle = '#6B5B47';
-                    ctx.lineWidth = 3;
-                    ctx.lineCap = 'round';
-                });
-                
-                // Mouse and touch events for upper canvas
-                this.canvasUpper.addEventListener('mousedown', (e) => this.startDrawing(e, 'upper'));
-                this.canvasUpper.addEventListener('mousemove', (e) => this.draw(e, 'upper'));
-                this.canvasUpper.addEventListener('mouseup', () => this.stopDrawing());
-                this.canvasUpper.addEventListener('touchstart', (e) => this.handleTouch(e, 'upper'));
-                this.canvasUpper.addEventListener('touchmove', (e) => this.handleTouch(e, 'upper'));
-                this.canvasUpper.addEventListener('touchend', () => this.stopDrawing());
-                
-                // Mouse and touch events for lower canvas
-                this.canvasLower.addEventListener('mousedown', (e) => this.startDrawing(e, 'lower'));
-                this.canvasLower.addEventListener('mousemove', (e) => this.draw(e, 'lower'));
-                this.canvasLower.addEventListener('mouseup', () => this.stopDrawing());
-                this.canvasLower.addEventListener('touchstart', (e) => this.handleTouch(e, 'lower'));
-                this.canvasLower.addEventListener('touchmove', (e) => this.handleTouch(e, 'lower'));
-                this.canvasLower.addEventListener('touchend', () => this.stopDrawing());
             }
 
             startDrawing(e, canvasType = 'upper') {
@@ -796,13 +757,11 @@
 
             nextLetter() {
                 this.state.currentAlphabet = (this.state.currentAlphabet + 1) % this.alphabet.length;
-                this.clearCanvas('both');
                 this.render();
             }
 
             previousLetter() {
                 this.state.currentAlphabet = (this.state.currentAlphabet - 1 + this.alphabet.length) % this.alphabet.length;
-                this.clearCanvas('both');
                 this.render();
             }
 
@@ -838,7 +797,6 @@
                 this.state.currentAlphabet = 0;
                 this.state.currentPhrase = 0;
                 this.state.showResult = false;
-                this.clearCanvas('both');
                 this.render();
             }
 
@@ -858,8 +816,14 @@
                     document.getElementById('sound-info').textContent = letter.sound;
                     document.getElementById('example-word').textContent = letter.example;
                     
-                    // Update guide letters for both canvases
-                    this.updateGuideLetterDisplay();
+                    // Update letter displays
+                    const upperDisplay = document.getElementById('upper-display');
+                    const lowerDisplay = document.getElementById('lower-display');
+                    if (upperDisplay && lowerDisplay) {
+                        const letterParts = letter.letter.split(' ');
+                        upperDisplay.textContent = letterParts[0]; // Uppercase
+                        lowerDisplay.textContent = letterParts[1]; // Lowercase
+                    }
                     
                     // Update audio button texts to match current letter
                     const playNameBtn = document.getElementById('play-name-btn');
@@ -921,9 +885,9 @@
         function playLetterName() { app.playLetterName(); }
         function playLetterSound() { app.playLetterSound(); }
         function playPhrase() { app.playPhrase(); }
-        function clearCanvas(type) { app.clearCanvas(type); }
-        function clearBothCanvas() { app.clearBothCanvas(); }
-        function toggleGuide() { app.toggleGuide(); }
+        function animateUppercase() { app.animateUppercase(); }
+        function animateLowercase() { app.animateLowercase(); }
+        function showWritingTips() { app.showWritingTips(); }
         function nextLetter() { app.nextLetter(); }
         function previousLetter() { app.previousLetter(); }
         function checkPhraseAnswer() { app.checkPhraseAnswer(); }
